@@ -25,7 +25,7 @@ class Meeting(object):
         url = self.site.url + "pk_asil.htm"
         params = {
             " elin": self.body.id,
-            "pvm": '{d.day}.{d.month}.{d.year} {d.hour}:{minute}'.format(d=self.date, minute="{0:02d}".format(self.date.minute)),
+            "pvm": '{d.day}.{d.month}.{d.year}%20{d.hour}:{minute}'.format(d=self.date, minute="{0:02d}".format(self.date.minute)),
         }
         r = requests.get(url, params=params)
         soup = BeautifulSoup(r.text, 'html.parser')
