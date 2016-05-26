@@ -51,19 +51,18 @@ class Meeting(object):
                     attachment_url = self.site.base_url + attachment_link["href"]
                     for attachment_doc in self.get_attachments(attachment_url):
                         attachment_doc.parent_paragraph = document
-                        yield document
+                        yield attachment_doc
             else:
                 """ For now we are ignoring "Kokousmateriaali" documents,
-                    (collective documents containing all )
-                """ 
+                    (collective documents containing all)
+                """
                 pass
-
 
     def get_attachments(self, url):
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
-        rows = soup.find_all("tr", { "class": "data0" }) + soup.find_all("tr", { "class": "data1" })
-        attachments = []
+        rows = soup.find_all("tr", {"class": "data0"}) +\
+            soup.find_all("tr", {"class": "data1"})
         for row in rows:
             document_link = row.find("a")
             document_name = document_link.text
@@ -71,5 +70,4 @@ class Meeting(object):
             document = Document(document_name, document_url)
             document.type = "attachment"
             document.meeting = self
-            attachments.append(document)
-        return attachments
+            yield document
