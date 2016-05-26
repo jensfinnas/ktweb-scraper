@@ -4,7 +4,7 @@ Tested on City of Tampere.
 
 ### Install
 
-`pip install -r requirements.txt`
+    pip install -r requirements.txt
 
 ### Example usage
 
@@ -26,7 +26,7 @@ Get a list of all meetings from a given body.
 
 ``` python
 print site.meetings("Kaupunginhallitus"):
-``` 
+```
 
 Get documents from meetings.
 
@@ -34,11 +34,11 @@ Get documents from meetings.
 for meeting in site.meetings("Kaupunginhallitus"):
     for doc in meeting.documents():
     	print doc
-``` 
+```
 
 Documents can also be downloaded.
 
-```
+``` python
 doc.download()
 ```
 
