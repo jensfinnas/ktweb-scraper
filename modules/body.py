@@ -1,6 +1,5 @@
 # encoding: utf-8
-import requests
-from bs4 import BeautifulSoup
+
 
 class Body(object):
     """ Represents a decision making body
@@ -11,4 +10,3 @@ class Body(object):
 
     def __repr__(self):
         return (u'<Body: %s>' % (self.name)).encode('utf8')
-

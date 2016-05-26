@@ -4,9 +4,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from body import Body
 from meeting import Meeting
-from utils import parse_int
 import re
-import pdb
 
 
 class Site(object):
@@ -19,15 +17,15 @@ class Site(object):
         self.name = url.split("//")[1].split("/")[0]
 
     def bodies(self):
-        """ Lists all bodies 
+        """ Lists all bodies
         """
         if not hasattr(self, "body_list"):
             r = requests.get(self.url + "epj_tek.htm")
-            soup = BeautifulSoup(r.text,'html.parser')
-            options = soup.find( "form", { "name": "form1" })\
-                .find("select", { "name": "kirjaamo" })\
-                .find_all("option")
-            self.body_list = [ Body(x.text, x["value"]) for x in options ]
+            soup = BeautifulSoup(r.text, 'html.parser')
+            options = soup.find("form", {"name": "form1"})\
+                          .find("select", {"name": "kirjaamo"})\
+                          .find_all("option")
+            self.body_list = [Body(x.text, x["value"]) for x in options]
 
         return self.body_list
 
@@ -48,7 +46,8 @@ class Site(object):
         }
         r = requests.post(url, form_data)
         soup = BeautifulSoup(r.text, 'html.parser')
-        rows = soup.find_all("tr", { "class": "data0" }) + soup.find_all("tr", { "class": "data1" })
+        rows = soup.find_all("tr", {"class": "data0"}) +\
+            soup.find_all("tr", {"class": "data1"})
         meetings = []
         for row in rows:
             cells = row.find_all("td")
@@ -58,12 +57,12 @@ class Site(object):
         return meetings
 
     def _guess_body(self, body_str):
-        """ Returns a Body object given a name or id of a body 
+        """ Returns a Body object given a name or id of a body
         """
         for body in self.bodies():
             if body_str in body.id:
                 return body
             elif body_str in body.name:
                 return body
-        raise ValueError("%s is not a valid body name. Try %s instead." % (body_str, ", ".join(self.bodies())))
-
+        raise ValueError("%s is not a valid body name. Try %s instead." %
+                         (body_str, ", ".join(self.bodies())))
