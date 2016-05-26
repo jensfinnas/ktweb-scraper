@@ -8,7 +8,7 @@ import os
 class Document(object):
     def __init__(self, name, url):
         self.name = name
-        self.url = url
+        self.url = url.replace(" ", "%20")
 
     def __repr__(self):
         return (u'<Document: %s (%s)>' % (self.name, self.type)).encode('utf8')
