@@ -3,7 +3,6 @@
 import requests
 from bs4 import BeautifulSoup
 from document import Document
-import pdb 
 
 
 class Meeting(object):
@@ -30,8 +29,8 @@ class Meeting(object):
         }
         r = requests.get(url, params=params)
         soup = BeautifulSoup(r.text, 'html.parser')
-        rows = soup.find_all("tr", { "class": "data0" }) + soup.find_all("tr", { "class": "data1" })
-        documents = []
+        rows = soup.find_all("tr", {"class": "data0"}) +\
+            soup.find_all("tr", {"class": "data1"})
         for row in rows:
             document_link = row.find("a")
             document_name = document_link.text
@@ -45,21 +44,20 @@ class Meeting(object):
                 """
                 document.paragraph_number = cells[0].text
                 document.type = "paragraph"
-                documents.append(document)
+                yield document
 
                 attachment_link = cells[2].find("a")
                 if attachment_link:
                     attachment_url = self.site.base_url + attachment_link["href"]
                     for attachment_doc in self.get_attachments(attachment_url):
                         attachment_doc.parent_paragraph = document
-                        documents.append(attachment_doc)
+                        yield document
             else:
                 """ For now we are ignoring "Kokousmateriaali" documents,
                     (collective documents containing all )
                 """ 
                 pass
 
-        return documents
 
     def get_attachments(self, url):
         r = requests.get(url)
