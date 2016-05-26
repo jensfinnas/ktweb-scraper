@@ -3,7 +3,6 @@
 import requests
 from tqdm import tqdm
 import os
-import pdb 
 
 
 class Document(object):
@@ -37,4 +36,4 @@ class Document(object):
             self.name,
             self.type,
         ]
-        return "|".join(name_parts) + ".pdf" 
+        return "|".join(name_parts) + ".pdf"
