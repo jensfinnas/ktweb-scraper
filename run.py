@@ -36,9 +36,11 @@ for body in site.bodies():
                 print "failed to contact %s" % document.url
                 continue
 
-            size = response.info()["Content-Length"]
-            content_type = response.info()["Content-Length"]
-            print content_type
+            info = response.info()
+            print info["Content-Type"]["name"]
+            exit()
+            size = info["Content-Length"]
+            content_type = info["Content-Type"]
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str, document.name)
 
