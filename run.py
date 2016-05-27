@@ -2,6 +2,7 @@
 
 from urllib2 import urlopen, HTTPError, quote
 from time import sleep
+from modules.s3 import Bucket, open_s3_file
 
 try:
     import settings
@@ -24,15 +25,32 @@ def build_path(*args):
 for body in site.bodies():
     for meeting in site.meetings(body.name):
         for document in meeting.documents():
+
             sleep(settings.delay)
+
             try:
                 response = urlopen(document.url)
             except HTTPError:
-                print "failed to open %s" % document.url
+                print "failed to contact %s" % document.url
                 continue
 
             """ Include size in key, just in case """
             size = response.info()["Content-Length"]
             date_str = meeting.date.strftime("%Y-%m-%d")
-            key = build_path(body.name, date_str, document.name, size)
-            print key
+            key = build_path(body.name, date_str, document.name)
+
+            # Check DB for key
+            # TODO
+
+            # Put file on S3
+            bucket = Bucket(settings.s3_bucket)
+            bucket.put_file_from_url(document.url, "files/" + key)
+
+            # Extract text and metadata
+            with open_s3_file(bucket, "files/" + key) as file_:
+
+                print file_.name
+
+            exit()
+            # Add text to S3
+            # Add to db
