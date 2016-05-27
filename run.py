@@ -29,14 +29,16 @@ for body in site.bodies():
 
             sleep(settings.delay)
 
+            # Get headers
             try:
                 response = urlopen(document.url)
             except HTTPError:
                 print "failed to contact %s" % document.url
                 continue
 
-            """ Include size in key, just in case """
             size = response.info()["Content-Length"]
+            content_type = response.info()["Content-Length"]
+            print content_type
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str, document.name)
 
