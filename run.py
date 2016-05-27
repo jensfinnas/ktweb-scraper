@@ -3,6 +3,7 @@
 from urllib2 import urlopen, HTTPError, quote
 from time import sleep
 from modules.s3 import Bucket, open_s3_file
+from textract import process
 
 try:
     import settings
@@ -49,7 +50,7 @@ for body in site.bodies():
             # Extract text and metadata
             with open_s3_file(bucket, "files/" + key) as file_:
 
-                print file_.name
+                print process(file_.name)
 
             exit()
             # Add text to S3
