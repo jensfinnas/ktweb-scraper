@@ -2,8 +2,6 @@
 """This module contains the base class for all document classes.
 """
 
-from modules.utils import get_date_from_text, get_single_date_from_text
-
 
 class ExtractionNotAllowed(Exception):
     """The author of this file has disallowed extraction somehow.
@@ -55,11 +53,6 @@ class Page(object):
         """
         return None
 
-    def get_date(self):
-        """Returns a datetime date from the page header.
-        """
-        return get_single_date_from_text(self.get_header())
-
     def word_count(self):
         """Returns the number of non whitespace characters.
 
@@ -101,25 +94,6 @@ class ExtractorBase(object):
         """
         raise NotImplementedError('must be overridden by child classes')
 
-    def get_date(self):
-        """Return a best guess for the date of the meeting
-           this document refers to, based on the whole text.
-
-           Used as a fallback when Page.get_date does not return a
-           page specific date.
-
-           Do NOT rely on metadata to get the date, as that will
-           more often than not be wrong.
-        """
-        date = None
-
-        header_text = self.get_header()
-        date = get_single_date_from_text(header_text)
-
-        if date is None:
-            text = self.get_text()
-            date = get_date_from_text(text)
-        return date
 
 if __name__ == "__main__":
     print "This module is only intended to be called from other scripts."

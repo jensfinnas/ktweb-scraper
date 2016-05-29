@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 # encoding: utf-8
 
 from urllib2 import urlopen, HTTPError, quote
 from time import sleep
 from modules.s3 import Bucket, open_s3_file
 from textract import process
+# Make sure settings.py is set up
 try:
     import settings
 except ImportError:
@@ -11,56 +13,7 @@ except ImportError:
 cp settings.default.py settings.py"""
     exit()
 from modules.site import Site
-import magic
-
-
-class FileType(object):
-    UNKNOWN = 0
-    PDF = 1
-    DOC = 2
-    DOCX = 3
-    ODT = 4
-    RTF = 5
-    TXT = 6
-    HTML = 7
-
-    mime_to_type = {
-        'application/pdf': PDF,
-        'application/x-pdf': PDF,
-        'application/msword': DOC,
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': DOCX,
-        'application/vnd.oasis.opendocument.text': ODT,
-        'application/rtf': RTF,
-        'application/x-rtf': RTF,
-        'text/richtext': RTF,
-        'text/rtf': RTF,
-        'text/plain': TXT,
-        'text/html': HTML,
-        'text/x-server-parsed-html': HTML,
-        'application/xhtml+xml': HTML
-    }
-
-    type_to_ext = {
-        UNKNOWN: None,
-        PDF: "pdf",
-        DOC: "doc",
-        DOCX: "docx",
-        ODT: "odt",
-        RTF: "rtf",
-        TXT: "txt",
-        HTML: "html"
-    }
-
-    def get_mime_type(self, file_):
-        with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
-            # mimetype = m.id_buffer(file_)
-            mimetype = m.id_filename(file_.name)
-        try:
-            file_type = self.mime_to_type[mimetype]
-        except KeyError:
-            file_type = self.UNKNOWN
-
-        return file_type
+from modules.filetype import FileType
 
 
 def build_path(*args):
@@ -105,10 +58,11 @@ for body in site.bodies():
                 filetype = FileType()
                 mimetype = filetype.get_mime_type(file_)
                 ext = filetype.type_to_ext[mimetype]
+                Extractor = filetype.type_to_extractor[mimetype]
                 print ext
-
-                exit()
-                print process(file_.name)
+                print Extractor
+                print file_.name
+                # print process(file_.name, parser="doc")
 
             exit()
             # Add text to S3
