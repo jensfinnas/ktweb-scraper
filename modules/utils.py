@@ -76,6 +76,16 @@ def build_path(*args):
     return '/'.join(list_)
 
 
+def get_header_value(header, key_):
+    """Get a value from a http header, eg name from
+       `application/octet-stream; name=64248323.doc`
+    """
+    return {a[0]: a[1]
+            for a in [x.split("=")
+                      for x in header.split("; ")]
+            if len(a) > 1}[key_]
+
+
 if __name__ == "__main__":
     print "This module is only intended to be called from other scripts."
     import sys
