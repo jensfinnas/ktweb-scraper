@@ -1,26 +1,20 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from urllib2 import urlopen, HTTPError, quote, Request
+from urllib2 import urlopen, HTTPError, Request
 from time import sleep
 from modules.s3 import Bucket, open_s3_file
-# Make sure settings.py is set up
+from modules.site import Site
+from modules.utils import build_path
+from modules.filetype import FileType
+from modules.interface import Interface
+# Show a meaningful error msg if setup is not complete
 try:
     import settings
 except ImportError:
     print """Create a settings.py file to get started:
 cp settings.default.py settings.py"""
     exit()
-from modules.site import Site
-from modules.filetype import FileType
-from modules.interface import Interface
-
-
-def build_path(*args):
-    """ Build a urlencoded slash separated string
-    """
-    list_ = [quote(x.encode("utf-8")) for x in args]
-    return '/'.join(list_)
 
 
 cmd_args = [

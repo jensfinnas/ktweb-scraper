@@ -1,4 +1,5 @@
 # encoding: utf-8
+"""Various useful functions"""
 
 
 def parse_int(string):
@@ -64,3 +65,18 @@ def make_unicode(str_):
     # remove null character
     output = output.replace(u"\u0000", u"")
     return output
+
+
+def build_path(*args):
+    """ Build a urlencoded slash-separated string
+    """
+    from urllib2 import quote
+
+    list_ = [quote(x.encode("utf-8")) for x in args]
+    return '/'.join(list_)
+
+
+if __name__ == "__main__":
+    print "This module is only intended to be called from other scripts."
+    import sys
+    sys.exit()
