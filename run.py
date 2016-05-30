@@ -26,6 +26,7 @@ for body in site.bodies():
 
             sleep(settings.delay)
 
+            response = None
             try:
                 req = Request(document.url)
                 req.add_header('User-agent', settings.user_agent)
@@ -39,8 +40,11 @@ for body in site.bodies():
             content_type = info["Content-Type"]
             # Get file name from `application/octet-stream; name=64248323.doc`
             try:
-                file_name = content_type.split("; ")[1].split("=")[1]
-            except IndexError:
+                file_name = {a[0]: a[1]
+                             for a in [x.split("=")
+                             for x in content_type.split("; ")]
+                             if len(a) > 1}["name"]
+            except KeyError:
                 file_name = ""
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str,
