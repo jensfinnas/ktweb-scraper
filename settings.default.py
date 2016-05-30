@@ -13,3 +13,6 @@ delay = 1
 
 user_agent = "Mozilla/5.0 (compatible); Alma document scraper"
 """How do we identify when visiting web pages?"""
+
+email = "stockholm@jplusplus.org"
+"""Contact address, in case robot tries to take over world"""
