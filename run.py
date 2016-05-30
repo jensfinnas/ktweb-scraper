@@ -17,11 +17,7 @@ cp settings.default.py settings.py"""
     exit()
 
 
-cmd_args = [
-]
-ui = Interface("Run",
-               "Scrape, extract and store documents",
-               commandline_args=cmd_args)
+ui = Interface("Run", "Scrape, extract and store documents")
 
 site = Site(settings.ktweb_url)
 for body in site.bodies():
