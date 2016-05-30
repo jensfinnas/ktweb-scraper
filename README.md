@@ -5,6 +5,7 @@ Tested on City of Tampere.
 ### Install
 
     pip install -r requirements.txt
+    sudo apt-get install abiword tesseract wv ghostscript
 
 ### Example usage
 
