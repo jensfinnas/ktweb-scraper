@@ -102,6 +102,7 @@ class DocExtractor(ExtractorBase):
         import subprocess
         import os
         temp_filename = os.path.join("temp", "tmp.txt")
+
         try:
             arglist = ["abiword",
                        self.path,
@@ -109,8 +110,8 @@ class DocExtractor(ExtractorBase):
                        "--to-name=" + temp_filename
                        ]
             subprocess.call(args=arglist, stderr=subprocess.STDOUT)
-        except OSError:
-            raise OSError
+        except OSError as error:
+            raise OSError(error)
 
         self._text_cache = ""
         try:

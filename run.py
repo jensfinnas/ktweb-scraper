@@ -4,7 +4,6 @@
 from urllib2 import urlopen, HTTPError, quote
 from time import sleep
 from modules.s3 import Bucket, open_s3_file
-from textract import process
 # Make sure settings.py is set up
 try:
     import settings
@@ -59,9 +58,12 @@ for body in site.bodies():
                 mimetype = filetype.get_mime_type(file_)
                 ext = filetype.type_to_ext[mimetype]
                 Extractor = filetype.type_to_extractor[mimetype]
+                print file_.name
                 print ext
                 print Extractor
-                print file_.name
+                extractor = Extractor(file_.name)
+                text = extractor.get_text()
+                print text
                 # print process(file_.name, parser="doc")
 
             exit()

@@ -132,6 +132,8 @@ class Metadata(object):
         if isinstance(value, dict):  # if dict: make list
             foundValue = []
             for (k, v) in value.iteritems():
+                # This value could be encoded anyhow. Really.
+                # Let's try and find one that makes sense.
                 v = make_unicode(v)
                 foundValue.append(v)
         if isinstance(foundValue, list):  # if list: iterate
