@@ -17,7 +17,8 @@ cp settings.default.py settings.py"""
     exit()
 
 
-ui = Interface("Run", "Scrape, extract and store documents")
+ui = Interface("Run", "Scrape, extract and store documents",
+               commandline_args=["dryrun"])
 
 site = Site(settings.ktweb_url)
 for body in site.bodies():
@@ -65,7 +66,7 @@ for body in site.bodies():
             # Put file on S3
             ui.info("Putting %s on Amazon S3" % document.url)
             bucket = Bucket(settings.s3_bucket)
-            if ui.args["dryrun"]:
+            if ui.args.dryrun:
                 continue
             bucket.put_file_from_url(document.url, "files/" + key)
 
