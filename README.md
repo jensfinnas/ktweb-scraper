@@ -2,12 +2,22 @@
 
 Tested on City of Tampere.
 
-### Install
+## Install
 
     pip install -r requirements.txt
     sudo apt-get install abiword tesseract wv ghostscript
 
-### Example usage
+## Command line usage
+
+To start scraping:
+
+    python run.py
+
+To get help:
+
+    python run.py --help
+
+## Using the scraper as a Python module
 
 Basic initialization.
 
