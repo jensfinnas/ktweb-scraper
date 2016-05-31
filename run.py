@@ -76,18 +76,18 @@ for body in site.bodies():
             ui.debug("Checking database for key %s" % key)
             if collection.find_one({"key": key}):
                 if ui.args.overwrite:
-                    ui.info("Key %s already in database. Overwriting." % key)
+                    ui.info("Key already in database. Overwriting %s." % key)
                 else:
-                    ui.debug("Key %s already in database. Skipping." % key)
+                    ui.debug("Key already in database. Skipping." % key)
                     continue
             else:
-                ui.info("Key %s not in database. Adding." % key)
+                ui.info("Key not in database. Adding %s." % key)
 
             if ui.args.dryrun:
                 continue
 
             # Put file on S3
-            ui.info("Putting %s on Amazon S3" % document.url)
+            ui.debug("Copying file to Amazon S3 from %s" % document.url)
             file_path = "files/" + key
             bucket.put_file_from_url(document.url, file_path)
             document_data["file_url"] = file_path
@@ -108,7 +108,7 @@ for body in site.bodies():
             document_data["text_url"] = text_path
 
             # Add to db
-            ui.info("Putting %s in database" % key)
+            ui.debug("Putting data in database" % key)
             result = collection.replace_one({"key": key},  # Replace if exists
                                             document_data,
                                             upsert=True)
