@@ -25,6 +25,15 @@ class Bucket(object):
         self.bucket_name = bucket_name
         self.bucket = self.s3.Bucket(self.bucket_name)
 
+    def put_file_from_string(self, text, key):
+        """ Put text in a public file on S3.
+            Obviously not suitable for very large objects.
+        """
+        self.bucket.put_object(ACL="public-read",
+                               Body=text,
+                               Key=key
+                               )
+
     def put_file_from_url(self, url, key):
         """ Fetch and upload a file from the internet to S3.
             Will upload in chunks, to handle (very, very) large files
