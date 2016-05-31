@@ -108,7 +108,7 @@ for body in site.bodies():
             document_data["text_url"] = text_path
 
             # Add to db
-            ui.debug("Putting data in database" % key)
+            ui.debug("Putting data in database")
             result = collection.replace_one({"key": key},  # Replace if exists
                                             document_data,
                                             upsert=True)
