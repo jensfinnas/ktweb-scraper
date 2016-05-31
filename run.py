@@ -19,7 +19,7 @@ cp settings.default.py settings.py"""
 
 
 ui = Interface("Run", "Scrape, extract and store documents",
-               commandline_args=["dryrun"])
+               commandline_args=["dryrun", "overwrite"])
 
 ui.info("Setting up database connection")
 client = MongoClient(settings.db_uri)
@@ -75,10 +75,13 @@ for body in site.bodies():
             # Check DB for key and size
             ui.debug("Checking database for key %s" % key)
             if collection.find_one({"key": key}):
-                ui.debug("Key %s already in database." % key)
-                continue
+                if ui.args.overwrite:
+                    ui.info("Key %s already in database. Overwriting." % key)
+                else:
+                    ui.debug("Key %s already in database. Skipping." % key)
+                    continue
             else:
-                ui.info("Key %s not in database. Adding document." % key)
+                ui.info("Key %s not in database. Adding." % key)
 
             if ui.args.dryrun:
                 continue
@@ -102,7 +105,10 @@ for body in site.bodies():
 
             text_path = "text/" + key + ".txt"
             bucket.put_file_from_string(text, text_path)
+            document_data["text_url"] = text_path
 
             # Add to db
             ui.info("Putting %s in database" % key)
-            result = collection.insert_one(document_data)
+            result = collection.replace_one({"key": key},  # Replace if exists
+                                            document_data,
+                                            upsert=True)
