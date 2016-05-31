@@ -52,13 +52,13 @@ for body in site.bodies():
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str,
                              document.name)
-            document_data["file_key"] = key
+            document_data["key"] = key
             document_data["file_name"] = file_name
             document_data["meeting_date"] = date_str
             document_data["meeting_body"] = body.name
             document_data["document_name"] = document.name
-            document_data["size"] = info["Content-Length"]
-            document_data["url"] = document.url
+            document_data["size_at_server"] = info["Content-Length"]
+            document_data["original_url"] = document.url
 
             # Check DB for key and size
             # TODO
@@ -68,18 +68,23 @@ for body in site.bodies():
             bucket = Bucket(settings.s3_bucket)
             if ui.args.dryrun:
                 continue
-            bucket.put_file_from_url(document.url, "files/" + key)
+            file_path = "files/" + key
+            bucket.put_file_from_url(document.url, file_path)
+            document_data["file_url"] = file_path
 
             # Do extraction
+            text = None
             with open_s3_file(bucket, "files/" + key) as file_:
                 filetype = FileType()
                 mimetype = filetype.get_mime_type(file_)
                 Extractor = filetype.type_to_extractor[mimetype]
                 extractor = Extractor(file_.name)
                 document_data["file_type"] = filetype.type_to_ext[mimetype]
-                document_data["text"] = extractor.get_text()
+                text = extractor.get_text()
+                document_data["text_length"] = len(text)
 
-            print document_data
-            exit()
-            # Add text to S3
+            text_path = "text/" + key + ".txt"
+            bucket.put_file_from_string(text, text_path)
+
             # Add to db
+            exit()
