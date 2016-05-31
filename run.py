@@ -3,6 +3,7 @@
 
 from urllib2 import urlopen, HTTPError, Request
 from time import sleep
+from pymongo import MongoClient
 from modules.s3 import Bucket, open_s3_file
 from modules.site import Site
 from modules.utils import build_path, get_header_value
@@ -20,11 +21,22 @@ cp settings.default.py settings.py"""
 ui = Interface("Run", "Scrape, extract and store documents",
                commandline_args=["dryrun"])
 
+ui.info("Setting up database connection")
+client = MongoClient(settings.db_uri)
+db = client[settings.db_name]
+collection = db[settings.db_table]
+
+ui.info("Setting up scraper")
 site = Site(settings.ktweb_url)
+
+ui.info("Setting up Amazon S3 connection")
+bucket = Bucket(settings.s3_bucket)
+
 for body in site.bodies():
     for meeting in site.meetings(body.name):
         for document in meeting.documents():
 
+            ui.debug("Processing document: %s" % document)
             document_data = {}
             sleep(settings.delay)
 
@@ -35,7 +47,7 @@ for body in site.bodies():
                 req.add_header('From', settings.email)
                 response = urlopen(req)
             except HTTPError:
-                print "failed to contact %s" % document.url
+                ui.warning("Failed to contact %s. Skipping." % document.url)
                 continue
 
             info = response.info()
@@ -61,13 +73,18 @@ for body in site.bodies():
             document_data["original_url"] = document.url
 
             # Check DB for key and size
-            # TODO
+            ui.debug("Checking database for key %s" % key)
+            if collection.find_one({"key": key}):
+                ui.debug("Key %s already in database." % key)
+                continue
+            else:
+                ui.info("Key %s not in database. Adding document." % key)
+
+            if ui.args.dryrun:
+                continue
 
             # Put file on S3
             ui.info("Putting %s on Amazon S3" % document.url)
-            bucket = Bucket(settings.s3_bucket)
-            if ui.args.dryrun:
-                continue
             file_path = "files/" + key
             bucket.put_file_from_url(document.url, file_path)
             document_data["file_url"] = file_path
@@ -87,4 +104,5 @@ for body in site.bodies():
             bucket.put_file_from_string(text, text_path)
 
             # Add to db
-            exit()
+            ui.info("Putting %s in database" % key)
+            result = collection.insert_one(document_data)
