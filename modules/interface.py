@@ -46,6 +46,7 @@ class Interface:
             "short": "-d", "long": "--dry",
             "dest": "dryrun",
             "action": 'store_true',
+            "default": False,
             "help": "Dry run. Do not upload files, or put stuff in databases."
         },
         "overwrite": {
