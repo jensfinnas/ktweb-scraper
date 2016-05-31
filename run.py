@@ -78,7 +78,7 @@ for body in site.bodies():
                 if ui.args.overwrite:
                     ui.info("Key already in database. Overwriting %s." % key)
                 else:
-                    ui.debug("Key already in database. Skipping." % key)
+                    ui.debug("Key already in database. Skipping.")
                     continue
             else:
                 ui.info("Key not in database. Adding %s." % key)
