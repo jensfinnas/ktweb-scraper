@@ -8,8 +8,16 @@ from os import unlink
 import requests
 
 
+MEGABYTE = 1048576
+
+
 class UploadError(Exception):
     """ S3 returned an error"""
+    pass
+
+
+class FileTooLarge(Exception):
+    """ Use multipart upload instead """
     pass
 
 
@@ -29,6 +37,8 @@ class Bucket(object):
         """ Put text in a public file on S3.
             Obviously not suitable for very large objects.
         """
+        if len(text) > (50 * MEGABYTE):
+            raise FileTooLarge("Please use multipart upload")
         self.bucket.put_object(ACL="public-read",
                                Body=text,
                                Key=key
@@ -60,8 +70,8 @@ class Bucket(object):
         }
         try:
             uploader.complete(MultipartUpload=parts_info)
-        except ClientError:
-            raise UploadError
+        except ClientError as error:
+                raise UploadError(error)
 
     def get_file(self, key, file):
         """Download file"""

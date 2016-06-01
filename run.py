@@ -3,6 +3,7 @@
 
 from urllib2 import urlopen, HTTPError, Request
 from time import sleep
+from datetime import datetime
 from pymongo import MongoClient
 from modules.s3 import Bucket, open_s3_file
 from modules.site import Site
@@ -65,6 +66,7 @@ for body in site.bodies():
             key = build_path(body.name, date_str,
                              document.name)
             document_data["key"] = key
+            document_data["created_date"] = datetime.utcnow()
             document_data["file_name"] = file_name
             document_data["meeting_date"] = date_str
             document_data["meeting_body"] = body.name
@@ -87,9 +89,15 @@ for body in site.bodies():
                 continue
 
             # Put file on S3
-            ui.debug("Copying file to Amazon S3 from %s" % document.url)
+            ui.debug("Copying file to Amazon S3 from %s (%s bytes)" %
+                     (document.url, document_data["size_at_server"]))
             file_path = "files/" + key
-            bucket.put_file_from_url(document.url, file_path)
+            if int(document_data["size_at_server"]) < 6000000:
+                ui.debug("Using simple upload")
+                bucket.put_file_from_string(response.read(), file_path)
+            else:
+                ui.debug("Using multipart upload")
+                bucket.put_file_from_url(document.url, file_path)
             document_data["file_url"] = file_path
 
             # Do extraction
