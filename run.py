@@ -5,7 +5,7 @@ from urllib2 import urlopen, HTTPError, Request
 from time import sleep
 from datetime import datetime
 from pymongo import MongoClient
-from modules.s3 import Bucket, open_s3_file
+from modules.s3 import Bucket, open_s3_file, UploadError
 from modules.site import Site
 from modules.utils import build_path, get_header_value
 from modules.filetype import FileType
@@ -18,6 +18,9 @@ except ImportError:
 cp settings.default.py settings.py"""
     exit()
 
+MEGABYTE = 1048576
+GIGABYTE = 1073741824
+TERABYTE = 1099511627776
 
 ui = Interface("Run", "Scrape, extract and store documents",
                commandline_args=["dryrun", "overwrite"])
@@ -92,12 +95,17 @@ for body in site.bodies():
             ui.debug("Copying file to Amazon S3 from %s (%s bytes)" %
                      (document.url, document_data["size_at_server"]))
             file_path = "files/" + key
-            if int(document_data["size_at_server"]) < 6000000:
+            if int(document_data["size_at_server"]) < (10 * MEGABYTE):
                 ui.debug("Using simple upload")
                 bucket.put_file_from_string(response.read(), file_path)
             else:
                 ui.debug("Using multipart upload")
-                bucket.put_file_from_url(document.url, file_path)
+                try:
+                    bucket.put_file_from_url(document.url, file_path)
+                except UploadError:
+                    ui.debug("Multipart upload failed, trying in one chunk.")
+                    bucket.put_file_from_string(response.read(), file_path)
+
             document_data["file_url"] = file_path
 
             # Do extraction
@@ -105,10 +113,20 @@ for body in site.bodies():
             with open_s3_file(bucket, "files/" + key) as file_:
                 filetype = FileType()
                 mimetype = filetype.get_mime_type(file_)
-                Extractor = filetype.type_to_extractor[mimetype]
+                try:
+                    Extractor = filetype.type_to_extractor[mimetype]
+                except KeyError:
+                    ui.warning("No extractor available for filetype %s in %s" %
+                               (mimetype, document.url))
+                    continue
                 extractor = Extractor(file_.name)
                 document_data["file_type"] = filetype.type_to_ext[mimetype]
-                text = extractor.get_text()
+                try:
+                    text = extractor.get_text()
+                except Exception as error:
+                    ui.warning("Failed to extract text from %s. %s" %
+                               (document.url, error))
+                    continue
                 document_data["text_length"] = len(text)
 
             text_path = "text/" + key + ".txt"

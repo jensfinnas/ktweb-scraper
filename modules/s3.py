@@ -9,6 +9,8 @@ import requests
 
 
 MEGABYTE = 1048576
+GIGABYTE = 1073741824
+TERABYTE = 1099511627776
 
 
 class UploadError(Exception):
