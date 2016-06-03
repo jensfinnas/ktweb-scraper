@@ -9,3 +9,4 @@ openxmllib==1.0.7
 rtf2xml==1.33
 html2text==2016.5.29
 pymongo==3.2.2
+pytesseract==0.1.6
