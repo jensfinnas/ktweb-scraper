@@ -4,8 +4,10 @@ Tested on City of Tampere.
 
 ## Install
 
+    sudo apt-get install pip-python python git abiword tesseract wv ghostscript python-imaging python-dev libxml2-dev libxslt1-dev libz-dev
+    git clone https://github.com/jensfinnas/ktweb-scraper
+    cd ktweb-scraper
     pip install -r requirements.txt
-    sudo apt-get install abiword tesseract wv ghostscript
 
 ## Command line usage
 
