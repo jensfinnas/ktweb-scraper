@@ -59,7 +59,7 @@ class PdfImage(object):
             return u""
         try:
             text = image_to_string(Image.open("temp/" + temp_image),
-                                   lang="swe")
+                                   lang="fin")
         except IOError:
             # PdfMiner did not return an image
             # Let's try to create one ourselves
