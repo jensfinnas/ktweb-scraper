@@ -5,6 +5,7 @@ from urllib2 import urlopen, HTTPError, Request
 from time import sleep
 from datetime import datetime
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 from modules.s3 import Bucket, open_s3_file, UploadError
 from modules.site import Site
 from modules.utils import build_path, get_header_value
@@ -29,6 +30,12 @@ ui.info("Setting up database connection")
 client = MongoClient(settings.db_uri)
 db = client[settings.db_name]
 collection = db[settings.db_table]
+try:
+    ui.info("Database has %s documents" % collection.count())
+except ServerSelectionTimeoutError:
+    ui.error("""MongoDB server timed out.
+This is most likely due to your IP address not being whitelisted.""")
+    ui.exit()
 
 ui.info("Setting up scraper")
 site = Site(settings.ktweb_url)
