@@ -257,10 +257,7 @@ class PdfMinerWrapper(object):
         interpreter = PDFPageInterpreter(rsrcmgr, device)
 
         page_number = 0
-        pages = PDFPage.create_pages(self.document)
-        if len(pages) > 1000:
-            raise NotImplementedError("PDF contains too many pages.")
-        for page in pages:
+        for page in PDFPage.create_pages(self.document):
             page_number += 1
             interpreter.process_page(page)
             layout = device.get_result()

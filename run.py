@@ -99,6 +99,10 @@ for body in site.bodies():
             if ui.args.dryrun:
                 continue
 
+            if int(document_data["size_at_server"]) > (7 * MEGABYTE):
+                ui.warning("Skipping large file: %s" % key)
+                continue
+
             # Put file on S3
             ui.debug("Copying file to Amazon S3 from %s (%s bytes)" %
                      (document.url, document_data["size_at_server"]))
