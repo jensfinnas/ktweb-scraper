@@ -4,10 +4,13 @@ Tested on City of Tampere.
 
 ## Install
 
-    sudo apt-get install pip-python python git abiword tesseract wv ghostscript python-imaging python-dev libxml2-dev libxslt1-dev libz-dev
+    sudo apt-get install python-pip python git abiword tesseract-ocr tesseract-ocr-fin wv ghostscript python-imaging python-dev libxml2-dev libxslt1-dev zlib1g-dev libjpeg62 libjpeg62-dev
     git clone https://github.com/jensfinnas/ktweb-scraper
     cd ktweb-scraper
     pip install -r requirements.txt
+
+You will also need to put your Amazon AWS credentials in `~/.aws`, as per https://aws.amazon.com/developers/getting-started/python/
+
 
 ## Command line usage
 
