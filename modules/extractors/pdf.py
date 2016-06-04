@@ -313,6 +313,8 @@ class PdfExtractor(ExtractorBase):
         self._page_cache = []
         try:
             with PdfMinerWrapper(self.path) as document:
+                if len(document) > 1000:
+                    raise NotImplementedError("PDF too long (> 1000 pages) for extractor")
                 for page in document:
                     if page.word_count() == 0:
                         logging.info("No text, doing OCR.")
