@@ -67,10 +67,11 @@ for body in site.bodies():
                 file_name = get_header_value(info["Content-Type"],
                                              "name")
             except KeyError:
-                file_name = get_header_value(info["Content-Disposition"],
-                                             "filename")
-            except KeyError:
-                file_name = None
+                try:
+                    file_name = get_header_value(info["Content-Disposition"],
+                                                 "filename")
+                except KeyError:
+                    file_name = None
 
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str,
