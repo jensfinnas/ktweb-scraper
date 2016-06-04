@@ -70,7 +70,7 @@ class PdfImage(object):
                                           self._image_obj.srcsize,
                                           self._stream.get_data(), "raw",
                                           "L", 0, 1)
-            text = image_to_string(temp_image, lang="swe")
+            text = image_to_string(temp_image, lang="fin")
         unlink("temp/" + temp_image)
         return text
 
@@ -221,7 +221,7 @@ class PdfPageFromOcr(PdfPage):
         time.sleep(1)  # make sure the server has time to write the files
         text = image_to_string(
             Image.open(temp_filename),
-            lang="swe")
+            lang="fin")
         unlink(temp_filename)
         return text
 
