@@ -257,7 +257,10 @@ class PdfMinerWrapper(object):
         interpreter = PDFPageInterpreter(rsrcmgr, device)
 
         page_number = 0
-        for page in PDFPage.create_pages(self.document):
+        pages = PDFPage.create_pages(self.document)
+        if len(pages) > 1000:
+            raise NotImplementedError("PDF contains too many pages.")
+        for page in pages:
             page_number += 1
             interpreter.process_page(page)
             layout = device.get_result()
@@ -313,8 +316,6 @@ class PdfExtractor(ExtractorBase):
         self._page_cache = []
         try:
             with PdfMinerWrapper(self.path) as document:
-                if len(document) > 1000:
-                    raise NotImplementedError("PDF too long (> 1000 pages) for extractor")
                 for page in document:
                     if page.word_count() == 0:
                         logging.info("No text, doing OCR.")
