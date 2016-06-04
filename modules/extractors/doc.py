@@ -47,15 +47,17 @@ class DocExtractor(ExtractorBase):
         """Uses Abiword to return the first page header encountered.
         """
         import subprocess
-        import os
-        temp_filename = os.path.join("temp", "tmp.abw")
+        from os import devnull, path
+        temp_filename = path.join("temp", "tmp.abw")
         try:
             arglist = ["abiword",
                        self.path,
                        "--to=abw",
                        "--to-name=" + temp_filename
                        ]
-            subprocess.call(args=arglist, stderr=subprocess.STDOUT)
+            # Through any output away
+            with open(devnull, 'w') as fp:
+                subprocess.call(args=arglist, stderr=fp)
         except OSError:
             raise OSError
 
