@@ -219,6 +219,7 @@ class PdfPageFromOcr(PdfPage):
         # Do OCR
         import time
         time.sleep(1)  # make sure the server has time to write the files
+        Image.MAX_IMAGE_PIXELS = None  # Allow very large files
         text = image_to_string(
             Image.open(temp_filename),
             lang="fin")
