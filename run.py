@@ -146,6 +146,7 @@ for body in site.bodies():
             document_data["text_url"] = text_path
 
             # Add content-type to S3
+            ui.debug("Setting content-type at S3")
             bucket.set_content_type(file_path, filetype.type_to_mime[mimetype])
 
             # Add to db
