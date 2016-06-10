@@ -83,6 +83,12 @@ class Bucket(object):
         """Return file content"""
         pass
 
+    def set_content_type(self, key, contenttype):
+        """Set the Content Type of an existing file """
+        lowlevel_api_client = self.s3.meta.client
+        response = lowlevel_api_client.copy_object(Bucket=self.bucket_name, Key=key, ContentType=contenttype, MetadataDirective="REPLACE", CopySource=self.bucket_name + "/" + key)
+        print response
+
 
 class open_s3_file(object):
     """ Usage:

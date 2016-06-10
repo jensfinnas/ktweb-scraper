@@ -145,6 +145,9 @@ for body in site.bodies():
             bucket.put_file_from_string(text, text_path)
             document_data["text_url"] = text_path
 
+            # Add content-type to S3
+            bucket.set_content_type(file_path, filetype.type_to_mime[mimetype])
+
             # Add to db
             ui.debug("Putting data in database")
             result = collection.replace_one({"key": key},  # Replace if exists

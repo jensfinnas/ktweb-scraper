@@ -34,6 +34,17 @@ class FileType(object):
         'application/xhtml+xml': HTML
     }
 
+    type_to_mime = {
+        UNKNOWN: None,
+        PDF: "application/pdf",
+        DOC: "application/msword",
+        DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ODT: "application/vnd.oasis.opendocument.text",
+        RTF: "application/rtf",
+        TXT: "text/plain",
+        HTML: "text/html"
+    }
+
     type_to_ext = {
         UNKNOWN: None,
         PDF: "pdf",
