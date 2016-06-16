@@ -99,7 +99,9 @@ for body in site.bodies():
             if ui.args.dryrun:
                 continue
 
-            if int(document_data["size_at_server"]) > (7 * MEGABYTE):
+            if settings.max_file_size is not None \
+                    and int(document_data["size_at_server"]) > \
+                    settings.max_file_size * MEGABYTE:
                 ui.warning("Skipping large file: %s" % key)
                 continue
 

@@ -12,16 +12,19 @@ delay = 1
 """ Number of seconds to sleep between downloads """
 
 user_agent = "Mozilla/5.0 (compatible); Alma document scraper"
-"""How do we identify when visiting web pages?"""
+""" How do we identify when visiting web pages? """
 
 email = "stockholm@jplusplus.org"
-"""Contact address, in case robot tries to take over world"""
+""" Contact address, in case robot tries to take over world """
 
 db_uri = None
-"""URI for the MongoDB instance, eg mongodb://localhost:27017/"""
+""" URI for the MongoDB instance, eg mongodb://localhost:27017/ """
 
 db_name = None
-"""A MongoDB instance can have multiple databases"""
+""" A MongoDB instance can have multiple databases """
 
 db_table = None
-"""The MongoDB Collection"""
+""" The MongoDB Collection"""
+
+max_file_size = 30
+""" Size in MB. Larger files will be ignored. Use None for no limit """
