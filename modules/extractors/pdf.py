@@ -212,7 +212,7 @@ class PdfPageFromOcr(PdfPage):
                        "-dFirstPage=" + str(self.page_number),
                        "-dLastPage=" + str(self.page_number),
                        self.pdf_path]
-            subprocess.call(args=arglist, stderr=subprocess.STDOUT)
+            subprocess.check_output(args=arglist, stderr=subprocess.STDOUT)
         except OSError as e:
             logging.error("Failed to run GhostScript." +
                           "I/O error({0}): {1}".format(e.errno, e.strerror))
