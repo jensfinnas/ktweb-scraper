@@ -6,7 +6,6 @@ from body import Body
 from meeting import Meeting
 import re
 
-
 class Site(object):
     """ Represents a KT Web site
     """
@@ -27,17 +26,36 @@ class Site(object):
                           .find_all("option")
             self.body_list = [Body(x.text, x["value"]) for x in options]
 
+            # Exclude "kaikki toimielimet"
+            self.body_list = self.body_list[1:]
+
         return self.body_list
 
     def meetings(self, body):
         """ Returns a list of all meetings
         """
+        return self.upcoming_meetings(body) + self.past_meetings(body)
+        
+
+    def upcoming_meetings(self, body):
+        return self._get_meetings(body, "upcoming")
+
+    def past_meetings(self, body):
+        return self._get_meetings(body, "past")
+
+    def _get_meetings(self, body, upcoming_or_past):
         if not isinstance(body, Body):
             """ This function can be called with either a Body object or string
             """
             body = self._guess_body(body)
 
-        url = self.url + "pk_kokl.htm"
+        if upcoming_or_past == "upcoming":
+            url = self.url + "epj_kokl.htm"
+        elif upcoming_or_past == "past":
+            url = self.url + "pk_kokl.htm"
+        else:
+            raise ValueError("Define if you want to get upcoming or past meetings")
+
         form_data = {
             "oper": "where",
             "kirjaamo": body.id,
@@ -48,12 +66,14 @@ class Site(object):
         soup = BeautifulSoup(r.text, 'html.parser')
         rows = soup.find_all("tr", {"class": "data0"}) +\
             soup.find_all("tr", {"class": "data1"})
+
         meetings = []
         for row in rows:
             cells = row.find_all("td")
             date = datetime.strptime(cells[0].text, '%d.%m.%Y %H:%M')
             body = self._guess_body(cells[1].text)
             meetings.append(Meeting(self, body, date))
+
         return meetings
 
     def _guess_body(self, body_str):

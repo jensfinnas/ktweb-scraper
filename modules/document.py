@@ -6,12 +6,21 @@ import os
 
 
 class Document(object):
-    def __init__(self, name, url):
+    def __init__(self,name=None,url=None,meeting=None,site=None,agenda_or_minutes=None,paragraph_or_attachment=None,paragraph_number=None):
         self.name = name
         self.url = url.replace(" ", "%20")
+        self.meeting = meeting
+        self.site = site
+        self.agenda_or_minutes = agenda_or_minutes
+        self.paragraph_or_attachment = paragraph_or_attachment
+        self.paragraph_number = paragraph_number
 
     def __repr__(self):
-        return (u'<Document: %s (%s)>' % (self.name, self.type)).encode('utf8')
+        return (u'<Document (%s): %s (%s)>' % (
+            self.agenda_or_minutes,
+            self.name,
+            self.paragraph_or_attachment
+            )).encode('utf8')
 
     def download(self, file_name=None, directory="tmp"):
         if not file_name:
@@ -34,6 +43,8 @@ class Document(object):
             self.meeting.body.id,
             self.meeting.date.strftime("%Y-%m-%d %H:%M"),
             self.name,
-            self.type,
+            self.paragraph_or_attachment,
         ]
         return "|".join(name_parts) + ".pdf"
+
+        

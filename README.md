@@ -38,13 +38,16 @@ Get a list of all available decision-making bodies.
 print site.bodies()
 ```
 
-Get a list of all meetings from a given body.
+Get a list of all upcoming or past (or both) meetings from a given body.
 
 ``` python
-print site.meetings("Kaupunginhallitus"):
+print site.upcoming_meetings("Kaupunginhallitus")
+print site.past_meetings("Kaupunginhallitus")
+print site.meetings("Kaupunginhallitus")
 ```
 
-Get documents from meetings.
+Meetings have two kind of documents: agendas ("esityslista") and minutes ("pöytäkirja"). 
+You can get those using `meeting.agenda()` and `meeting.minutes()`. Or both  using `meeting.documents()`
 
 ``` python
 for meeting in site.meetings("Kaupunginhallitus"):
