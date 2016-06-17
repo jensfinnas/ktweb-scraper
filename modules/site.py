@@ -31,23 +31,33 @@ class Site(object):
 
         return self.body_list
 
-    def meetings(self, body):
+    def meetings(self, body, after_date=None):
         """ Returns a list of all meetings
+            If after_date is set only meetings after a given date is included.
+            after_date can be string or a datetime object.
         """
-        return self.upcoming_meetings(body) + self.past_meetings(body)
+        return self.upcoming_meetings(body, after_date=after_date) + self.past_meetings(body, after_date=after_date)
         
 
-    def upcoming_meetings(self, body):
-        return self._get_meetings(body, "upcoming")
+    def upcoming_meetings(self, body, after_date=None):
+        return self._get_meetings(body, "upcoming", after_date=after_date)
 
-    def past_meetings(self, body):
-        return self._get_meetings(body, "past")
+    def past_meetings(self, body, after_date=None):
+        return self._get_meetings(body, "past", after_date=after_date)
 
-    def _get_meetings(self, body, upcoming_or_past):
+    def _get_meetings(self, body, upcoming_or_past, after_date=None):
         if not isinstance(body, Body):
             """ This function can be called with either a Body object or string
             """
             body = self._guess_body(body)
+
+        if after_date:
+            if not isinstance(after_date, datetime):
+                """ after_date can be both a datestring and a datetime 
+                    obejct.
+                """
+                after_date = datetime.strptime(after_date, "%Y-%m-%d")
+
 
         if upcoming_or_past == "upcoming":
             url = self.url + "epj_kokl.htm"
@@ -72,7 +82,9 @@ class Site(object):
             cells = row.find_all("td")
             date = datetime.strptime(cells[0].text, '%d.%m.%Y %H:%M')
             body = self._guess_body(cells[1].text)
-            meetings.append(Meeting(self, body, date))
+
+            if (not after_date) or (after_date.date() <= date.date()):
+                meetings.append(Meeting(self, body, date))
 
         return meetings
 

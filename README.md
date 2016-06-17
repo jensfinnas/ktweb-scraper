@@ -46,6 +46,12 @@ print site.past_meetings("Kaupunginhallitus")
 print site.meetings("Kaupunginhallitus")
 ```
 
+You can also choose to only get meetings after a specific date.
+
+``` python
+print site.meetings("Kaupunginhallitus", after_date="2016-06-01")
+```
+
 Meetings have two kind of documents: agendas ("esityslista") and minutes ("pöytäkirja"). 
 You can get those using `meeting.agenda()` and `meeting.minutes()`. Or both  using `meeting.documents()`
 
