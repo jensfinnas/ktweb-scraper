@@ -6,6 +6,7 @@ from body import Body
 from meeting import Meeting
 import re
 
+
 class Site(object):
     """ Represents a KT Web site
     """
@@ -36,8 +37,8 @@ class Site(object):
             If after_date is set only meetings after a given date is included.
             after_date can be string or a datetime object.
         """
-        return self.upcoming_meetings(body, after_date=after_date) + self.past_meetings(body, after_date=after_date)
-        
+        return self.upcoming_meetings(body, after_date=after_date) +\
+            self.past_meetings(body, after_date=after_date)
 
     def upcoming_meetings(self, body, after_date=None):
         return self._get_meetings(body, "upcoming", after_date=after_date)
@@ -53,11 +54,10 @@ class Site(object):
 
         if after_date:
             if not isinstance(after_date, datetime):
-                """ after_date can be both a datestring and a datetime 
+                """ after_date can be both a datestring and a datetime
                     obejct.
                 """
                 after_date = datetime.strptime(after_date, "%Y-%m-%d")
-
 
         if upcoming_or_past == "upcoming":
             url = self.url + "epj_kokl.htm"
