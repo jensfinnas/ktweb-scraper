@@ -6,14 +6,16 @@ import os
 
 
 class Document(object):
+    """Represents a single, downloadable document
+    """
 
-    # name
-    # url
-    # meeting
-    # site
-    # agenda_or_minutes = 'agenda' | 'minutes'
-    # paragraph_or_attachment = 'paragraph' | 'attachment'
-    # int paragraph_number
+    name = None
+    url = None
+    meeting = None
+    site = None
+    agenda_or_minutes = None  # 'agenda' or 'minutes'
+    paragraph_or_attachment = None  # 'paragraph' or 'attachment'
+    paragraph_number = None
 
     def __init__(self, name=None,
                  url=None, meeting=None,
