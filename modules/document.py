@@ -6,7 +6,19 @@ import os
 
 
 class Document(object):
-    def __init__(self,name=None,url=None,meeting=None,site=None,agenda_or_minutes=None,paragraph_or_attachment=None,paragraph_number=None):
+
+    # name
+    # url
+    # meeting
+    # site
+    # agenda_or_minutes = 'agenda' | 'minutes'
+    # paragraph_or_attachment = 'paragraph' | 'attachment'
+    # int paragraph_number
+
+    def __init__(self, name=None,
+                 url=None, meeting=None,
+                 site=None, agenda_or_minutes=None,
+                 paragraph_or_attachment=None, paragraph_number=None):
         self.name = name
         self.url = url.replace(" ", "%20")
         self.meeting = meeting
@@ -20,7 +32,7 @@ class Document(object):
             self.agenda_or_minutes,
             self.name,
             self.paragraph_or_attachment
-            )).encode('utf8')
+        )).encode('utf8')
 
     def download(self, file_name=None, directory="tmp"):
         if not file_name:
@@ -46,5 +58,3 @@ class Document(object):
             self.paragraph_or_attachment,
         ]
         return "|".join(name_parts) + ".pdf"
-
-        
