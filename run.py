@@ -75,7 +75,8 @@ for body in site.bodies():
 
             date_str = meeting.date.strftime("%Y-%m-%d")
             key = build_path(body.name, date_str,
-                             document.name)
+                             document.agenda_or_minutes, document.name)
+            document_data["document_type"] = document.agenda_or_minutes
             document_data["key"] = key
             document_data["created_date"] = datetime.utcnow()
             document_data["file_name"] = file_name
