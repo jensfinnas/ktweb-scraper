@@ -85,6 +85,11 @@ for body in site.bodies():
             document_data["document_name"] = document.name
             document_data["size_at_server"] = info["Content-Length"]
             document_data["original_url"] = document.url
+            if document.parent_paragraph:
+                # Fro attachments
+                document_data["parent_paragraph_url"] = document.parent_paragraph.url
+            else:
+                document_data["parent_paragraph_url"] = None                
 
             # Check DB for key and size
             ui.debug("Checking database for key %s" % key)

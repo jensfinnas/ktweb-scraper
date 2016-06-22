@@ -16,10 +16,12 @@ class Document(object):
     agenda_or_minutes = None  # 'agenda' or 'minutes'
     paragraph_or_attachment = None  # 'paragraph' or 'attachment'
     paragraph_number = None
+    parent_paragraph = None # Document instance with parent (for attachments) 
 
     def __init__(self, name=None,
                  url=None, meeting=None,
                  site=None, agenda_or_minutes=None,
+                 parent_paragraph=None,
                  paragraph_or_attachment=None, paragraph_number=None):
         self.name = name
         self.url = url.replace(" ", "%20")
