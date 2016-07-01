@@ -44,7 +44,7 @@ ui.info("Setting up Amazon S3 connection")
 bucket = Bucket(settings.s3_bucket)
 
 for body in site.bodies():
-    for meeting in site.meetings(body.name):
+    for meeting in site.meetings(body.name, after_date=settings.start_date):
         for document in meeting.documents():
 
             ui.debug("Processing document: %s" % document)
