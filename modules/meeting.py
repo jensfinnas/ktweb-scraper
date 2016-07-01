@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from document import Document
 from itertools import chain
 
-
 class Meeting(object):
     """ Represents a meeting.
         A meeting re
@@ -16,14 +15,13 @@ class Meeting(object):
         self.date = date
 
     def __repr__(self):
-        return (u'<Meeting: %s, %s>' %
-                (self.body.name, self.date)).encode('utf8')
+        return (u'<Meeting: %s, %s>' % (self.body.name, self.date)).encode('utf8')
 
     def documents(self):
         """ Returns both agenda ("esityslista") and minutes ("pöytäkirja")
         """
         return chain(self.minutes(), self.agenda())
-
+        
     def minutes(self):
         """ Returns all meeting minutes ("pöytäkirja") as list of documents.
         """
@@ -36,7 +34,7 @@ class Meeting(object):
 
     def _get_documents(self, agenda_or_minutes):
         """ Returns a list of documents related to a meeting.
-            url should be "epj_asil.htm" or
+            url should be "epj_asil.htm" or 
             Every paragraph has an own document.
             A paragraph can have multiple attachments. These are treated as
             independent documents
@@ -59,7 +57,7 @@ class Meeting(object):
         rows = soup.find_all("tr", {"class": "data0"}) +\
             soup.find_all("tr", {"class": "data1"})
 
-        for row in rows:
+        for row in rows:            
             cells = row.find_all("td")
             if len(cells) > 1:
                 """ This is paragraph document
