@@ -30,4 +30,8 @@ max_file_size = 30
 """ Size in MB. Larger files will be ignored. Use None for no limit """
 
 start_date = None
-""" Earliest date to fetch documents from. None means no filtering """
+""" Earliest date to fetch documents from. None means no filtering.
+One-liner to fetch the past two weeks:
+ import datetime;start_date = (datetime.datetime.now() -
+                               datetime.timedelta(days=14)).strftime("%Y-%m-%d")
+"""
