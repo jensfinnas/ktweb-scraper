@@ -43,6 +43,8 @@ site = Site(settings.ktweb_url)
 ui.info("Setting up Amazon S3 connection")
 bucket = Bucket(settings.s3_bucket)
 
+connection_errors = 0
+
 for body in site.bodies():
     for meeting in site.meetings(body.name, after_date=settings.start_date):
         for document in meeting.documents():
@@ -57,9 +59,14 @@ for body in site.bodies():
                 req.add_header('User-agent', settings.user_agent)
                 req.add_header('From', settings.email)
                 response = urlopen(req)
-            except HTTPError, URLError:
+            except (HTTPError, URLError):
                 ui.warning("Failed to contact %s. Skipping." % document.url)
-                continue
+                connection_errors += 1
+                if connection_errors > 50:
+                    ui.error("Got too many connetion errors")
+                    ui.exit()
+                else:
+                    continue
 
             info = response.info()
             try:
