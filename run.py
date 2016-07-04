@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from urllib2 import urlopen, HTTPError, Request
+from urllib2 import urlopen, HTTPError, URLError, Request
 from time import sleep
 from datetime import datetime
 from pymongo import MongoClient
@@ -57,7 +57,7 @@ for body in site.bodies():
                 req.add_header('User-agent', settings.user_agent)
                 req.add_header('From', settings.email)
                 response = urlopen(req)
-            except HTTPError:
+            except HTTPError, URLError:
                 ui.warning("Failed to contact %s. Skipping." % document.url)
                 continue
 
@@ -123,12 +123,15 @@ for body in site.bodies():
                 try:
                     bucket.put_file_from_url(document.url, file_path)
                 except UploadError:
-                    ui.debug("Multipart upload failed, trying in one chunk.")
-                    bucket.put_file_from_string(response.read(), file_path)
+                    # ui.debug("Multipart upload failed, trying in one chunk.")
+                    # bucket.put_file_from_string(response.read(), file_path)
+                    ui.debug("Multipart upload failed, giving up.")
+                    continue
 
             document_data["file_url"] = file_path
 
             # Do extraction
+            ui.debug("Opening file for extraction.")
             text = None
             with open_s3_file(bucket, "files/" + key) as file_:
                 filetype = FileType()
