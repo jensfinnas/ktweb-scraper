@@ -96,7 +96,7 @@ for body in site.bodies():
                 # Fro attachments
                 document_data["parent_paragraph_url"] = document.parent_paragraph.url
             else:
-                document_data["parent_paragraph_url"] = None                
+                document_data["parent_paragraph_url"] = None
 
             # Check DB for key and size
             ui.debug("Checking database for key %s" % key)
